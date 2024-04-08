@@ -4,21 +4,54 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 
 @Slf4j
 public class HttpRequestHandler implements Runnable {
-    private final Socket client;
 
-    public HttpRequestHandler(Socket client) {
-        this.client = client;
+    private final Queue<Socket> requestQueue;
+    private final int MAX_QUEUE_SIZE=10;
+
+    public HttpRequestHandler() {
+        requestQueue = new LinkedList<>();
     }
 
+    public synchronized void addRequest(Socket client){
+        //TODO queueSize >= MAX_QUEUE_SIZE 대기 합니다. 즉 queue에 데에티거 소비될 때 까지 client Socket을 Queue에 등록하는 작업을 대기 합니다.
+
+        while(requestQueue.size()>=MAX_QUEUE_SIZE){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        requestQueue.add(client);
+        notifyAll();
+    }
+
+    public synchronized Socket getRequest(){
+        //Queue가 비어있다면 대기 합니다.
+        while(requestQueue.isEmpty()){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        notifyAll();
+        return requestQueue.poll();
+    }
 
     @Override
     public void run() {
-        StringBuilder requestBuilder = new StringBuilder();
 
+        Socket client = getRequest();
+
+        StringBuilder requestBuilder = new StringBuilder();
         try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
         ) {
@@ -63,5 +96,7 @@ public class HttpRequestHandler implements Runnable {
                 }
             }
         }
+
+        run();
     }
 }
