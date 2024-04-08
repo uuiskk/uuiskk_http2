@@ -1,18 +1,17 @@
 package com.nhnacademy.http.channel;
 
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Channel {
-    private final Queue<Socket> requestQueue;
-    private long QUEUE_MAX_SIZE;
+public class RequestChannel {
+    private final Queue<HttpRequest> requestQueue;
+    private long QUEUE_MAX_SIZE = 10;
 
-    public Channel(Queue<Socket> requestQueue) {
+    public RequestChannel() {
         this.requestQueue = new LinkedList<>();
     }
 
-    public synchronized void addRequest(Socket client){
+    public synchronized void addRequest(HttpRequest httpRequest){
         while(requestQueue.size() >= QUEUE_MAX_SIZE){
             try {
                 wait();
@@ -20,11 +19,11 @@ public class Channel {
                 throw new RuntimeException(e);
             }
         }
-        requestQueue.add(client);
+        requestQueue.add(httpRequest);
         notifyAll();
     }
 
-    public synchronized Socket getRequest(){
+    public synchronized HttpRequest getRequest(){
         while(requestQueue.isEmpty()){
             try {
                 wait();
@@ -32,7 +31,6 @@ public class Channel {
                 throw new RuntimeException(e);
             }
         }
-
         notifyAll();
         return requestQueue.poll();
     }

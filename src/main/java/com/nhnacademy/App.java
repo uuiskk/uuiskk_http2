@@ -1,6 +1,8 @@
 package com.nhnacademy;
 
 import com.nhnacademy.http.HttpRequestHandler;
+import com.nhnacademy.http.channel.HttpRequest;
+import com.nhnacademy.http.channel.RequestChannel;
 import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,9 +13,10 @@ public class App
 {
     public static void main( String[] args ) throws IOException {
         try(ServerSocket serverSocket = new ServerSocket(8080);){
+            RequestChannel requestChannel = new RequestChannel();
 
-            HttpRequestHandler httpRequestHandlerA = new HttpRequestHandler();
-            HttpRequestHandler httpRequestHandlerB = new HttpRequestHandler();
+            HttpRequestHandler httpRequestHandlerA = new HttpRequestHandler(requestChannel);
+            HttpRequestHandler httpRequestHandlerB = new HttpRequestHandler(requestChannel);
 
             Thread threadA = new Thread(httpRequestHandlerA);
             threadA.start();
@@ -21,19 +24,11 @@ public class App
             Thread threadB = new Thread(httpRequestHandlerB);
             threadB.start();
 
-
-            long count = 0;
-
             while(true){
                 Socket client = serverSocket.accept();
-
-                if(count%2==0){
-                    httpRequestHandlerA.addRequest(client);
-                }else{
-                    httpRequestHandlerB.addRequest(client);
-                }
-                count++;
+                requestChannel.addRequest(new HttpRequest(client));
             }
+
         }
     }
 }
