@@ -1,5 +1,8 @@
 package com.nhnacademy.http.channel;
 
+import com.nhnacademy.http.context.Context;
+import com.nhnacademy.http.context.ContextHolder;
+import com.nhnacademy.http.context.exception.ObjectNotFoundException;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
@@ -55,12 +58,16 @@ public class HttpJob implements Executable {
         }
 
         //TODO RequestURI에 따른 URL을 호출 합니다.
-        if(httpRequest.getRequestURI().equals("/index.html")) {
-            HttpService indexHttpService = new IndexHttpService();
-            indexHttpService.service(httpRequest, httpResponse);
-        }else if(httpRequest.getRequestURI().equals("/info.html")) {
-            HttpService infoHttpService = new InfoHttpService();
-            infoHttpService.service(httpRequest, httpResponse);
+        Context context = ContextHolder.getApplicationContext();
+
+        HttpService httpService = null;
+
+        try {
+            httpService = (HttpService) context.getAttribute(httpRequest.getRequestURI());
+            httpService.service(httpRequest, httpResponse);
+        }catch (ObjectNotFoundException e){
+            log.error("Service Not Found : {}",e.getMessage());
+            return;
         }
 
         try {

@@ -3,6 +3,11 @@ package com.nhnacademy;
 import com.nhnacademy.http.HttpRequestHandler;
 import com.nhnacademy.http.channel.HttpJob;
 import com.nhnacademy.http.channel.RequestChannel;
+import com.nhnacademy.http.context.Context;
+import com.nhnacademy.http.context.ContextHolder;
+import com.nhnacademy.http.service.IndexHttpService;
+import com.nhnacademy.http.service.InfoHttpService;
+import com.nhnacademy.http.util.CounterUtils;
 import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,6 +17,12 @@ import java.net.Socket;
 public class App 
 {
     public static void main( String[] args ) throws IOException {
+        //TODO Context에 HttpService Object 등록
+        Context context = ContextHolder.getApplicationContext();
+        context.setAttribute("/index.html",new IndexHttpService());
+        context.setAttribute("/info.html", new InfoHttpService());
+        context.setAttribute(CounterUtils.CONTEXT_COUNTER_NAME,0l);
+
         try(ServerSocket serverSocket = new ServerSocket(8080);){
             RequestChannel requestChannel = new RequestChannel();
 

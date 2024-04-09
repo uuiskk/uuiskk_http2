@@ -2,6 +2,7 @@ package com.nhnacademy.http.service;
 
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
+import com.nhnacademy.http.util.CounterUtils;
 import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +36,7 @@ public class InfoHttpService implements HttpService {
         responseBody = responseBody.replace("${id}",id);
         responseBody = responseBody.replace("${name}",name);
         responseBody = responseBody.replace("${age}",age);
+        responseBody = responseBody.replace("${count}", String.valueOf(CounterUtils.increaseAndGet()));
 
         //TODO Header-설정
         String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.getBytes().length);
