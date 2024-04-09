@@ -1,5 +1,10 @@
 package com.nhnacademy.http.channel;
 
+import com.nhnacademy.http.request.HttpRequest;
+import com.nhnacademy.http.request.HttpRequestImpl;
+import com.nhnacademy.http.response.HttpResponse;
+import com.nhnacademy.http.response.HttpResponseImpl;
+import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -9,10 +14,16 @@ import java.util.Objects;
 
 @Slf4j
 public class HttpJob implements Executable {
+
     private final HttpRequest httpRequest;
+    private final HttpResponse httpResponse;
+
+    private final Socket client;
 
     public HttpJob(Socket client) {
         this.httpRequest = new HttpRequestImpl(client);
+        this.httpResponse = new HttpResponseImpl(client);
+        this.client = client;
     }
 
     public HttpRequest getHttpRequest() {
@@ -22,58 +33,39 @@ public class HttpJob implements Executable {
     @Override
     public void execute(){
 
-        //TODO
-        HttpRequestImpl httpRequestImpl = (HttpRequestImpl) this.httpRequest;
-        Socket client = httpRequestImpl.getClient();
+        log.debug("method:{}", httpRequest.getMethod());
+        log.debug("uri:{}", httpRequest.getRequestURI());
+        log.debug("clinet-closed:{}",client.isClosed());
 
-        log.debug("method:{}", httpRequestImpl.getMethod());
-        log.debug("uri:{}", httpRequestImpl.getRequestURI());
-        log.debug("clinet-closed:{}",httpRequestImpl.getClient().isClosed());
-
-        if(httpRequestImpl.getRequestURI().equals("/favicon.ico")){
+        if(httpRequest.getRequestURI().equals("/favicon.ico")){
             return;
         }
 
-        URL url = this.getClass().getResource(httpRequestImpl.getRequestURI());
-        if(Objects.isNull(url)){
-            log.debug("404-not found");
+        if(!ResponseUtils.isExist(httpRequest.getRequestURI())){
             try {
+                //404 - not -found
                 client.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            //404 처리
             return;
         }
 
-        StringBuilder responseBody = new StringBuilder();
-
-        try(InputStream inputStream = this.getClass().getResourceAsStream(httpRequestImpl.getRequestURI());
-            BufferedReader reader =  new BufferedReader(new InputStreamReader(inputStream,"UTF-8"))){
-
-            while(true) {
-                String line = reader.readLine();
-                if(Objects.isNull(line)){
-                    break;
-                }
-                responseBody.append(line);
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+        //TODO Body-설정
+        String responseBody = null;
+        try {
+            responseBody = ResponseUtils.tryGetBodyFormFile(httpRequest.getRequestURI());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        StringBuilder responseHeader = new StringBuilder();
-        responseHeader.append(String.format("HTTP/1.0 200 OK%s",System.lineSeparator()));
-        responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));
-        responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",System.lineSeparator()));
-        responseHeader.append(String.format("Connection: Closed%s",System.lineSeparator()));
-        responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),System.lineSeparator(),System.lineSeparator()));
+        //TODO Header-설정
+        String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.length());
 
-        try(BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))){
-            bufferedWriter.write(responseHeader.toString());
-            bufferedWriter.write(responseBody.toString());
+        //TODO PrintWriter 응답
+        try(PrintWriter bufferedWriter = httpResponse.getWriter();){
+            bufferedWriter.write(responseHeader);
+            bufferedWriter.write(responseBody);
             bufferedWriter.flush();
             log.debug("body:{}",responseBody.toString());
         } catch (IOException e) {
@@ -85,6 +77,5 @@ public class HttpJob implements Executable {
                 throw new RuntimeException(e);
             }
         }
-
     }
 }

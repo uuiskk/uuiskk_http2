@@ -1,4 +1,4 @@
-package com.nhnacademy.http.channel;
+package com.nhnacademy.http.request;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public interface HttpRequest {
     //header의 value를 반환 합니다.
     String getHeader(String name);
 
-    //request에 값을(name->value) 설정합니다.
+    //request에 값을(name->value) 설정 합니다.
     void setAttribute(String name, Object o);
 
     //request에 설정된 값을 반환합니다.

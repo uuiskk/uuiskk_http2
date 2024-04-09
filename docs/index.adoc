@@ -76,11 +76,19 @@ public synchronized Socket getRequest(){
 
 
 == HttpRequest Abstraction
-* link:../src/main/java/com/nhnacademy/http/channel/HttpRequestImpl.java[HttpRequestImpl]  구현 합니다.
+* link:../src/main/java/com/nhnacademy/http/request/HttpRequestImpl.java[HttpRequestImpl]  구현 합니다.
 
 [source,java]
 --
-include::../src/main/java/com/nhnacademy/http/channel/HttpRequest.java[]
+include::../src/main/java/com/nhnacademy/http/request/HttpRequest.java[]
+--
+
+== HttpResponse Abstraction
+* link:../src/main/java/com/nhnacademy/http/response/HttpResponseImpl.java[HttpResponseImpl] 구현 합니다.
+
+[source, java]
+--
+include::../src/main/java/com/nhnacademy/http/response/HttpResponse.java[]
 --
 
 == Reference

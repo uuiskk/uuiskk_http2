@@ -1,4 +1,4 @@
-package com.nhnacademy.http.channel;
+package com.nhnacademy.http.request;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,11 +47,6 @@ public class HttpRequestImpl implements HttpRequest {
         }
 
     }
-
-    public Socket getClient() {
-        return client;
-    }
-
     @Override
     public String getMethod() {
         return String.valueOf(headerMap.get(KEY_HTTP_METHOD));
