@@ -1,7 +1,6 @@
 package com.nhnacademy.http;
 
-import com.nhnacademy.http.channel.HttpRequest;
-import com.nhnacademy.http.channel.RequestChannel;
+import com.nhnacademy.http.channel.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -15,8 +14,8 @@ public class HttpRequestHandler implements Runnable {
 
     @Override
     public void run() {
-        HttpRequest httpRequest = requestChannel.getRequest();
-        httpRequest.execute();
+        HttpJob httpJob = requestChannel.getHttpJob();
+        httpJob.execute();
         run();
     }
 }

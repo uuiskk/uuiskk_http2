@@ -74,3 +74,14 @@ public synchronized Socket getRequest(){
 }
 ----
 
+
+== HttpRequest Abstraction
+* link:../src/main/java/com/nhnacademy/http/channel/HttpRequestImpl.java[HttpRequestImpl]  구현 합니다.
+
+[source,java]
+--
+include::../src/main/java/com/nhnacademy/http/channel/HttpRequest.java[]
+--
+
+== Reference
+* https://developer.mozilla.org/ko/docs/Web/HTTP/Methods[HTTP Methods]

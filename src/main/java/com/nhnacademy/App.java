@@ -1,7 +1,7 @@
 package com.nhnacademy;
 
 import com.nhnacademy.http.HttpRequestHandler;
-import com.nhnacademy.http.channel.HttpRequest;
+import com.nhnacademy.http.channel.HttpJob;
 import com.nhnacademy.http.channel.RequestChannel;
 import lombok.extern.slf4j.Slf4j;
 import java.io.*;
@@ -26,7 +26,7 @@ public class App
 
             while(true){
                 Socket client = serverSocket.accept();
-                requestChannel.addRequest(new HttpRequest(client));
+                requestChannel.addHttpJob(new HttpJob(client));
             }
 
         }

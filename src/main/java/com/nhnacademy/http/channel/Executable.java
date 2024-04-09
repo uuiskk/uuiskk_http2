@@ -1,5 +1,7 @@
 package com.nhnacademy.http.channel;
 
+import java.io.IOException;
+
 public interface Executable {
-    void execute();
+    void execute() throws IOException;
 }

@@ -4,14 +4,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class RequestChannel {
-    private final Queue<HttpRequest> requestQueue;
+    private final Queue<HttpJob> requestQueue;
     private long QUEUE_MAX_SIZE = 10;
 
     public RequestChannel() {
         this.requestQueue = new LinkedList<>();
     }
 
-    public synchronized void addRequest(HttpRequest httpRequest){
+    public synchronized void addHttpJob(HttpJob httpJob){
         while(requestQueue.size() >= QUEUE_MAX_SIZE){
             try {
                 wait();
@@ -19,11 +19,11 @@ public class RequestChannel {
                 throw new RuntimeException(e);
             }
         }
-        requestQueue.add(httpRequest);
+        requestQueue.add(httpJob);
         notifyAll();
     }
 
-    public synchronized HttpRequest getRequest(){
+    public synchronized HttpJob getHttpJob(){
         while(requestQueue.isEmpty()){
             try {
                 wait();
