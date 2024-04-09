@@ -9,7 +9,7 @@ public class ResponseUtils {
 
     public static boolean isExist(String filePath){
         URL url = ResponseUtils.class.getResource(filePath);
-        return Objects.isNull(url) ? true : false;
+        return Objects.nonNull(url);
     }
     public static String tryGetBodyFormFile(String filePath) throws IOException {
         StringBuilder responseBody = new StringBuilder();

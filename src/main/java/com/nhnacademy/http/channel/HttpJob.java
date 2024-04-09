@@ -4,6 +4,9 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.HttpResponseImpl;
+import com.nhnacademy.http.service.HttpService;
+import com.nhnacademy.http.service.IndexHttpService;
+import com.nhnacademy.http.service.InfoHttpService;
 import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,31 +54,21 @@ public class HttpJob implements Executable {
             return;
         }
 
-        //TODO Body-설정
-        String responseBody = null;
-        try {
-            responseBody = ResponseUtils.tryGetBodyFormFile(httpRequest.getRequestURI());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        //TODO RequestURI에 따른 URL을 호출 합니다.
+        if(httpRequest.getRequestURI().equals("/index.html")) {
+            HttpService indexHttpService = new IndexHttpService();
+            indexHttpService.service(httpRequest, httpResponse);
+        }else if(httpRequest.getRequestURI().equals("/info.html")) {
+            HttpService infoHttpService = new InfoHttpService();
+            infoHttpService.service(httpRequest, httpResponse);
         }
 
-        //TODO Header-설정
-        String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.length());
-
-        //TODO PrintWriter 응답
-        try(PrintWriter bufferedWriter = httpResponse.getWriter();){
-            bufferedWriter.write(responseHeader);
-            bufferedWriter.write(responseBody);
-            bufferedWriter.flush();
-            log.debug("body:{}",responseBody.toString());
+        try {
+            if(Objects.nonNull(client) && client.isConnected()) {
+                client.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                client.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
