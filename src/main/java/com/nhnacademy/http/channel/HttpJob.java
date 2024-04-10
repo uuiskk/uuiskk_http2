@@ -9,30 +9,18 @@ import java.util.Objects;
 
 @Slf4j
 public class HttpJob implements Executable {
-    private final HttpRequest httpRequest;
+    private final Socket client;
 
     public HttpJob(Socket client) {
-        this.httpRequest = new HttpRequestImpl(client);
+        this.client = client;
     }
 
-    public HttpRequest getHttpRequest() {
-        return httpRequest;
+    public Socket getClient() {
+        return client;
     }
 
     @Override
     public void execute(){
-
-        //TODO
-        HttpRequestImpl httpRequestImpl = (HttpRequestImpl) this.httpRequest;
-        Socket client = httpRequestImpl.getClient();
-
-        log.debug("method:{}", httpRequestImpl.getMethod());
-        log.debug("uri:{}", httpRequestImpl.getRequestURI());
-        log.debug("clinet-closed:{}",httpRequestImpl.getClient().isClosed());
-
-        if(httpRequestImpl.getRequestURI().equals("/favicon.ico")){
-            return;
-        }
 
         URL url = this.getClass().getResource(httpRequestImpl.getRequestURI());
         if(Objects.isNull(url)){
