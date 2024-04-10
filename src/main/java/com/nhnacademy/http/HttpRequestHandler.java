@@ -15,11 +15,15 @@ public class HttpRequestHandler implements Runnable {
     private final int MAX_QUEUE_SIZE=10;
 
     public HttpRequestHandler() {
+        //TODO#1 requestQueue를 초기화 합니다. Java에서 Queue의 구현체인 LinkedList를 사용 합니다.
         requestQueue = new LinkedList<>();
     }
 
     public synchronized void addRequest(Socket client){
-        //TODO queueSize >= MAX_QUEUE_SIZE 대기 합니다. 즉 queue에 데에티거 소비될 때 까지 client Socket을 Queue에 등록하는 작업을 대기 합니다.
+
+        /* TODO#2 queueSize >= MAX_QUEUE_SIZE 대기 합니다.
+            즉 queue에 데이터가 소비될 때 까지 client Socket을 Queue에 등록하는 작업을 대기 합니다.
+        */
 
         while(requestQueue.size()>=MAX_QUEUE_SIZE){
             try {
@@ -28,12 +32,17 @@ public class HttpRequestHandler implements Runnable {
                 throw new RuntimeException(e);
             }
         }
+
+        //TODO#3 requestQueue에 client를 추가 합니다.
         requestQueue.add(client);
+
+        //TODO#4 대기하고 있는 Thread를 깨웁니다.
         notifyAll();
     }
 
     public synchronized Socket getRequest(){
-        //Queue가 비어있다면 대기 합니다.
+
+        //TODO#5 requestQueue가 비어 있다면 대기 합니다.
         while(requestQueue.isEmpty()){
             try {
                 wait();
@@ -41,13 +50,14 @@ public class HttpRequestHandler implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-
+        //TODO#6 대기하고 있는 Thread를 깨우고, requestQueue에서 client를 반환 합니다.
         notifyAll();
         return requestQueue.poll();
     }
 
     @Override
     public void run() {
+        //TODO#7 getRequest()를 호출하여 client를 requestQueue로 부터 얻습니다., requestQueue가 비어있다면 대기 합니다.
 
         Socket client = getRequest();
 
@@ -58,15 +68,12 @@ public class HttpRequestHandler implements Runnable {
 
             while (true) {
                 String line = bufferedReader.readLine();
-                //todo StringBuilder에 append
                 requestBuilder.append(line);
                 log.debug("line:{}", line);
                 if (Objects.isNull(line) || line.length() == 0) {
-                    //todo 종료 조건 null or size==0
                     break;
                 }
             }
-            //todo RequestBuilder에 append된 데이터를 parcing 하여 HttpRequest가 동작할 수 있도록 구현합니다.
 
             StringBuilder responseBody = new StringBuilder();
             responseBody.append("<html>");
@@ -88,15 +95,16 @@ public class HttpRequestHandler implements Runnable {
             bufferedWriter.flush();
             client.close();
         }catch (IOException e){
-            if (Objects.nonNull(client)){
-                try {
-                    client.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+            log.error("server error:{}",e);
+        }finally {
+            try {
+                client.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
+        //TODO#8 client에 응답하고 run() method를 호출 합니다., requestQueue가 비어있지 않다면 run() 실행합니다.
         run();
     }
 }

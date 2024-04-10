@@ -10,30 +10,6 @@ import java.net.Socket;
 public class App 
 {
     public static void main( String[] args ) throws IOException {
-        try(ServerSocket serverSocket = new ServerSocket(8080);){
 
-            HttpRequestHandler httpRequestHandlerA = new HttpRequestHandler();
-            HttpRequestHandler httpRequestHandlerB = new HttpRequestHandler();
-
-            Thread threadA = new Thread(httpRequestHandlerA);
-            threadA.start();
-
-            Thread threadB = new Thread(httpRequestHandlerB);
-            threadB.start();
-
-
-            long count = 0;
-
-            while(true){
-                Socket client = serverSocket.accept();
-
-                if(count%2==0){
-                    httpRequestHandlerA.addRequest(client);
-                }else{
-                    httpRequestHandlerB.addRequest(client);
-                }
-                count++;
-            }
-        }
     }
 }
