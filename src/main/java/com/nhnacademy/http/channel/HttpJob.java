@@ -22,57 +22,47 @@ public class HttpJob implements Executable {
     @Override
     public void execute(){
 
-        URL url = this.getClass().getResource(httpRequestImpl.getRequestURI());
-        if(Objects.isNull(url)){
-            log.debug("404-not found");
-            try {
-                client.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            //404 처리
-            return;
-        }
+        StringBuilder requestBuilder = new StringBuilder();
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+        ) {
 
-        StringBuilder responseBody = new StringBuilder();
-
-        try(InputStream inputStream = this.getClass().getResourceAsStream(httpRequestImpl.getRequestURI());
-            BufferedReader reader =  new BufferedReader(new InputStreamReader(inputStream,"UTF-8"))){
-
-            while(true) {
-                String line = reader.readLine();
-                if(Objects.isNull(line)){
+            while (true) {
+                String line = bufferedReader.readLine();
+                requestBuilder.append(line);
+                log.debug("line:{}", line);
+                if (Objects.isNull(line) || line.length() == 0) {
                     break;
                 }
-                responseBody.append(line);
             }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        StringBuilder responseHeader = new StringBuilder();
-        responseHeader.append(String.format("HTTP/1.0 200 OK%s",System.lineSeparator()));
-        responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));
-        responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",System.lineSeparator()));
-        responseHeader.append(String.format("Connection: Closed%s",System.lineSeparator()));
-        responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),System.lineSeparator(),System.lineSeparator()));
+            StringBuilder responseBody = new StringBuilder();
+            responseBody.append("<html>");
+            responseBody.append("<body>");
+            responseBody.append("<h1>hello java</h1>");
+            responseBody.append("</body>");
+            responseBody.append("</html>");
 
-        try(BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))){
+            StringBuilder responseHeader = new StringBuilder();
+
+            responseHeader.append(String.format("HTTP/1.0 200 OK%s",System.lineSeparator()));
+            responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));
+            responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",System.lineSeparator()));
+            responseHeader.append(String.format("Connection: Closed%s",System.lineSeparator()));
+            responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),System.lineSeparator(),System.lineSeparator()));
+
             bufferedWriter.write(responseHeader.toString());
             bufferedWriter.write(responseBody.toString());
             bufferedWriter.flush();
-            log.debug("body:{}",responseBody.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
+            client.close();
+        }catch (IOException e){
+            log.error("server error:{}",e);
+        }finally {
             try {
                 client.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
 }
