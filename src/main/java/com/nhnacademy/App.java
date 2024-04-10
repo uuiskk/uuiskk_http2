@@ -11,12 +11,7 @@ import java.net.Socket;
 public class App 
 {
     public static void main( String[] args ) throws IOException {
-        try(ServerSocket serverSocket = new ServerSocket(8080);){
-            while(true){
-                Socket client = serverSocket.accept();
-                Thread thread = new Thread(new HttpRequestHandler(client));
-                thread.start();
-            }
-        }
+        SimpleHttpServer simpleHttpServer = new SimpleHttpServer();
+        simpleHttpServer.start();
     }
 }
