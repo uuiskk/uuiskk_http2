@@ -7,18 +7,30 @@ import java.util.Objects;
 public class ResponseUtils {
     private ResponseUtils(){}
 
-    /*TODO#7 isExist를 구현합니다,
-       ex) filePat=/index.html 이면 /resources/index.html이 존재하면 true, 존재하지 않다면 false를 반환 합니다.
-   */
+    /**
+     * /src/main/resourcs 하위에 filePath에 해당되는 파일이 존재하는 체크 합니다.
+     * @param filePath, filePath -> requestURl -> ex) /index.html
+     * @return true or false
+     */
     public static boolean isExist(String filePath){
+        /* TODO#7 isExist를 구현합니다,
+           ex) filePat=/index.html 이면 /resources/index.html이 존재하면 true, 존재하지 않다면 false를 반환 합니다.
+        */
         URL url = ResponseUtils.class.getResource(filePath);
-        return Objects.isNull(url) ? true : false;
+        return Objects.nonNull(url);
     }
 
-    /*TODO#9 tryGetBodyFromFile 구현 합니다.
-    * ex) filePath = /index.html -> /resources/index.html 파일을 읽어서 반환 합니다.
-    * */
+    /**
+     *
+     * @param filePath , requestURi, ex) /index.html
+     * @return String , index.html 파일을 읽고 String으로 반환
+     * @throws IOException
+     */
     public static String tryGetBodyFromFile(String filePath) throws IOException {
+        /* TODO#9 tryGetBodyFromFile 구현 합니다.
+         * ex) filePath = /index.html -> /resources/index.html 파일을 읽어서 반환 합니다.
+         * */
+
         StringBuilder responseBody = new StringBuilder();
         try(InputStream inputStream = ResponseUtils.class.getResourceAsStream(filePath);
             BufferedReader reader =  new BufferedReader(new InputStreamReader(inputStream,"UTF-8"))){
@@ -38,12 +50,18 @@ public class ResponseUtils {
      * @param httpStatusCode , 200 - OK
      * @param charset, default : UTF-8
      * @param contentLength, responseBody의 length
-     * @return responseHeader를 String type으로 반환
+     * @return responseHeader를 String 반환
      */
     public static String createResponseHeader(int httpStatusCode, String charset, int contentLength ){
-        /* TODO#11 responseHeader를 생성 합니다.
-        *
-        * */
+        /* TODO#11 responseHeader를 생성 합니다. 아래 header 예시를 참고
+
+            HTTP/1.0 200 OK
+            Server: HTTP server/0.1
+            Content-type: text/html; charset=UTF-8
+            Connection: Closed
+            Content-Length:143
+
+        */
         StringBuilder responseHeader = new StringBuilder();
         responseHeader.append(String.format("HTTP/1.0 %d OK%s",httpStatusCode,System.lineSeparator()));
         responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));

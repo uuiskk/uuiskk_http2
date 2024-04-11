@@ -38,7 +38,7 @@ public class HttpJob implements Executable {
         log.debug("clinet-closed:{}",client.isClosed());
 
         /*TODO#5 Browser(client)는 특정 page를 요청시 먼저 /favicon.ico 호출 합니다.
-          아래 코드에서는 /favicon.ico 요청을 처리하지 않고 return 합니다.;
+          아래 코드에서는 /favicon.ico 요청을 처리하지 않고 return 합니다.
         */
         if(httpRequest.getRequestURI().equals("/favicon.ico")){
             return;
@@ -59,7 +59,7 @@ public class HttpJob implements Executable {
         }
 
         /*TODO#8 responseBody에 응답할 html 파일을 읽습니다.
-           ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI()) 이용하여 구현합니다.
+           ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI()) 이용하여 구현 합니다.
         */
         String responseBody = null;
         try {
@@ -73,12 +73,13 @@ public class HttpJob implements Executable {
         */
         String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.length());
 
-        //TODO PrintWriter 응답
+        //TODO#12 PrintWriter을 이용하하여 responseHeader, responseBody를 응답합니다.
         try(PrintWriter bufferedWriter = httpResponse.getWriter();){
             bufferedWriter.write(responseHeader);
             bufferedWriter.write(responseBody);
             bufferedWriter.flush();
-            log.debug("body:{}",responseBody.toString());
+            log.debug("header:{}", responseHeader);
+            log.debug("body:{}",responseBody);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {

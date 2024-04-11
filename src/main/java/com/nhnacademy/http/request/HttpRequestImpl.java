@@ -10,7 +10,10 @@ import java.util.Objects;
 
 @Slf4j
 public class HttpRequestImpl implements HttpRequest {
-    //TODO#2 HttpRequest를 구현 합니다.
+    /* TODO#2 HttpRequest를 구현 합니다.
+    *  test/java/com/nhnacademy/http/request/HttpRequestImplTest TestCode를 실행하고 검증 합니다.
+    */
+
     private final Socket client;
 
     private final Map<String,Object> headerMap = new HashMap<>();
@@ -32,6 +35,10 @@ public class HttpRequestImpl implements HttpRequest {
 
             while (true) {
                 String line = bufferedReader.readLine();
+                if(Objects.isNull(line)){
+                    break;
+                }
+
                 log.debug("line:{}", line);
 
                 if (isFirstLine(line)) {
