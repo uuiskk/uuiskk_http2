@@ -15,21 +15,22 @@ public class IndexHttpService implements HttpService{
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
 
-        //TODO Body-설정
+        //Body-설정
         String responseBody = null;
 
         try {
             responseBody = ResponseUtils.tryGetBodyFormFile(httpRequest.getRequestURI());
+            //TODO#8 CounterUtils.increaseAndGet()를 이용해서 context에 있는 counter 값을 증가시키고, 반환되는 값을 index.html에 반영 합니다.
+            //${count} <-- counter 값을 치환 합니다.
             responseBody = responseBody.replace("${count}", String.valueOf(CounterUtils.increaseAndGet()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-
-        //TODO Header-설정
+        //Header-설정
         String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.length());
 
-        //TODO PrintWriter 응답
+        //PrintWriter 응답
         try(PrintWriter bufferedWriter = httpResponse.getWriter();){
             bufferedWriter.write(responseHeader);
             bufferedWriter.write(responseBody);

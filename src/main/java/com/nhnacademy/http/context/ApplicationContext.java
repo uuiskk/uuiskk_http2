@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+//TODO#2 - Context를 구현합니다.
 public class ApplicationContext  implements Context{
     ConcurrentMap<String, Object> objectMap;
 
@@ -27,6 +28,8 @@ public class ApplicationContext  implements Context{
 
     @Override
     public Object getAttribute(String name) {
+        //object가 존재하지 않는다면 ObjectNotFoundException 예외가 발생합니다.
+
         objectNameCheck(name);
         Object object =  objectMap.get(name);
         if(Objects.isNull(object)){
