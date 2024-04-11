@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 
 
 public class HttpResponseImpl implements HttpResponse {
+    //TODO#4 HttpResponse를 구현 합니다.
 
     private final Socket socket;
     private final DataOutputStream out;

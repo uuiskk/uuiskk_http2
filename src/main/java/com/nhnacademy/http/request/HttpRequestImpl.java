@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Slf4j
 public class HttpRequestImpl implements HttpRequest {
-
+    //TODO#2 HttpRequest를 구현 합니다.
     private final Socket client;
 
     private final Map<String,Object> headerMap = new HashMap<>();
