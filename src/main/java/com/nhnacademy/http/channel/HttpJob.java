@@ -54,7 +54,10 @@ public class HttpJob implements Executable {
             return;
         }
 
-        //TODO RequestURI에 따른 URL을 호출 합니다.
+        /*TODO#4 RequestURI에 따른 HttpService를 생성하고 service() 호출 합니다.
+           httpService.service(httpRequest, httpResponse) 호출하면
+           service()에서 Request Method에 의해서 doGet or doPost를 호출 합니다
+        */
         if(httpRequest.getRequestURI().equals("/index.html")) {
             HttpService indexHttpService = new IndexHttpService();
             indexHttpService.service(httpRequest, httpResponse);
@@ -70,5 +73,6 @@ public class HttpJob implements Executable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

@@ -10,11 +10,12 @@ import java.io.PrintWriter;
 
 @Slf4j
 public class IndexHttpService implements HttpService{
+    //TODO#2 /index.html을  처리하는 HttpService 입니다.
 
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
 
-        //TODO Body-설정
+        //Body-설정
         String responseBody = null;
 
         try {
@@ -23,10 +24,10 @@ public class IndexHttpService implements HttpService{
             throw new RuntimeException(e);
         }
 
-        //TODO Header-설정
+        //Header-설정
         String responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8",responseBody.length());
 
-        //TODO PrintWriter 응답
+        //PrintWriter 응답
         try(PrintWriter bufferedWriter = httpResponse.getWriter();){
             bufferedWriter.write(responseHeader);
             bufferedWriter.write(responseBody);
