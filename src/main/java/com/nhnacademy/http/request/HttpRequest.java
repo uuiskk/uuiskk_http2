@@ -23,7 +23,7 @@ public interface HttpRequest {
     String getParameter(String name);
 
     // paramter를 map 형태로 반환 합니다.
-    Map<String, String[]> getParameterMap();
+    Map<String, String> getParameterMap();
 
     //header의 value를 반환 합니다.
     String getHeader(String name);

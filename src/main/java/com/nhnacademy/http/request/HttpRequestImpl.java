@@ -76,8 +76,8 @@ public class HttpRequestImpl implements HttpRequest {
     }
 
     @Override
-    public Map<String, String[]> getParameterMap() {
-        return (Map<String, String[]>) headerMap.get(KEY_QUERY_PARAM_MAP);
+    public Map<String, String> getParameterMap() {
+        return (Map<String, String>) headerMap.get(KEY_QUERY_PARAM_MAP);
     }
 
     @Override
