@@ -22,6 +22,7 @@ public class SimpleHttpServer {
 
     private final int port;
     private static final int DEFAULT_PORT=8080;
+    private final ServerSocket serverSocket;
 
     public SimpleHttpServer(){
         this(DEFAULT_PORT);
@@ -32,18 +33,25 @@ public class SimpleHttpServer {
             throw new IllegalArgumentException(String.format("invalid port :%d",port));
         }
         this.port = port;
+
+        try {
+            serverSocket = new ServerSocket(this.port);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void start() throws IOException {
+    public synchronized void start() throws IOException {
         //TODO#1 - SocketServer를 생성 합니다. PORT = 8080
-        try(ServerSocket serverSocket = new ServerSocket(8080);){
-            while(true){
+        try{
+            while(!Thread.currentThread().isInterrupted()){
                 Socket client = serverSocket.accept();
                 //TODO#2 - Client와 서버가 연결 되면 HttpRequestHandler를 이용해서 Thread을 생성 합니다.
                 Thread thread = new Thread(new HttpRequestHandler(client));
                 thread.start();
             }
+        }catch (Exception e){
+            log.debug("{},",e.getMessage());
         }
     }
-
 }
