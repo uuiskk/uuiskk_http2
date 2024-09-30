@@ -17,8 +17,19 @@ import java.util.Queue;
 
 public class RequestChannel {
     private final Queue<Executable> requestQueue;
-    private final static long QUEUE_MAX_SIZE = 10;
+    private static final long QUEUE_MAX_SIZE = 10;
+
+    private final long queueSize ;
+
     public RequestChannel() {
+        this(QUEUE_MAX_SIZE);
+    }
+
+    public RequestChannel(long queueSize){
+        if(queueSize<0){
+            throw new IllegalArgumentException("queueSize > 0");
+        }
+        this.queueSize = queueSize;
         this.requestQueue = new LinkedList<>();
     }
 

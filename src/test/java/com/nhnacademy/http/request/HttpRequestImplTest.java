@@ -13,10 +13,7 @@
 package com.nhnacademy.http.request;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
@@ -68,9 +65,24 @@ class HttpRequestImplTest {
     }
 
     @Test
-    void getParameter() {
+    @DisplayName("getParameterById")
+    void getParameterById() {
         String id = request.getParameter("id");
         assertEquals("marco",id);
+    }
+
+    @Test
+    @DisplayName("getParameterByName")
+    void getParameterByName() {
+        String name = request.getParameter("name");
+        assertEquals("마르코",name);
+    }
+
+    @Test
+    @DisplayName("getParameterByAge")
+    void getParameterByAge() {
+        String age = request.getParameter("age");
+        assertEquals(String.valueOf(40),age);
     }
 
     @Test
