@@ -14,6 +14,8 @@ package com.nhnacademy.http;
 
 import com.nhnacademy.http.channel.RequestChannel;
 
+import java.util.Objects;
+
 public class WorkerThreadPool {
     private final int poolSize;
 
@@ -30,6 +32,11 @@ public class WorkerThreadPool {
         if(poolSize <1){
             throw new IllegalArgumentException("poolSize: > 0");
         }
+        //TODO requestChannel null check
+        if(Objects.isNull(requestChannel)){
+            throw new IllegalArgumentException("requestChannel is null");
+        }
+
         this.poolSize = poolSize;
         this.requestChannel = requestChannel;
         //TODO#2 requestChannel을 이용하여 httpRequestHandler 객체를 생성 합니다.
@@ -38,14 +45,39 @@ public class WorkerThreadPool {
         //TODO#3 workerThreads를 초기화 합니다. poolSize 만큼 Thread를 생성 합니다.
         workerThreads = new Thread[poolSize];
         for(int i=0; i<poolSize; i++){
+            //TODO thread-1 이름설정
             workerThreads[i] = new Thread(httpRequestHandler);
+            workerThreads[i].setName(String.format("thread-%d",i));
         }
-
     }
-    public void start(){
+    public synchronized void start(){
         //TODO#4 workerThreads에 초가화된 모든 Thread를 start 합니다.
         for(Thread thread :workerThreads ){
             thread.start();
+        }
+    }
+
+    public synchronized void stop(){
+
+        /*interrupt()를 실행해서 thread를 종료 합니다.
+            - thread가 종료되는 과정에서 동기화 되어야 합니다.
+            - 우선 모든 thread interrupt 호출
+         */
+
+        for(Thread thread : workerThreads){
+            if(Objects.nonNull(thread) && thread.isAlive()){
+                thread.interrupt();
+            }
+        }
+
+        //join()를 이용해서 모든 thread가 종료될 떄 까지 대기 상태로 만듭니다.
+        for(Thread thread : workerThreads){
+
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }

@@ -34,6 +34,11 @@ public class HttpJob implements Executable {
     @Override
     public void execute(){
         //TODO#10 HttpJob는 execute() method를 구현 합니다.
+        //<html><body><h1>thread-0:hello java</h1></body>
+        //<html><body><h1>thread-1:hello java</h1></body>
+        //<html><body><h1>thread-2:hello java</h1></body>
+        //....
+
         StringBuilder requestBuilder = new StringBuilder();
         try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
