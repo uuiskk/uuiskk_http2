@@ -24,6 +24,9 @@ public class HttpJob implements Executable {
     private final Socket client;
 
     public HttpJob(Socket client) {
+        if(Objects.isNull(client)){
+            throw new IllegalArgumentException("client Socket is null");
+        }
         this.client = client;
     }
 
