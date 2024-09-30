@@ -19,7 +19,7 @@ public class RequestChannel {
     private final Queue<Executable> requestQueue;
     private static final long QUEUE_MAX_SIZE = 10;
 
-    private final long queueSize ;
+    private final long queueSize;
 
     public RequestChannel() {
         this(QUEUE_MAX_SIZE);
