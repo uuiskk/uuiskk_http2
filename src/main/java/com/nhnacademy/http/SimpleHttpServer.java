@@ -36,17 +36,19 @@ public class SimpleHttpServer {
     }
 
     public void start(){
-        try(ServerSocket serverSocket = new ServerSocket(8080);){
+        try(ServerSocket serverSocket = new ServerSocket(port);){
 
             HttpRequestHandler httpRequestHandlerA = new HttpRequestHandler();
             HttpRequestHandler httpRequestHandlerB = new HttpRequestHandler();
 
             //TODO#9threadA를 생성하고 시작 합니다.
             Thread threadA = new Thread(httpRequestHandlerA);
+            threadA.setName("threadA");
             threadA.start();
 
             //TODO#10threadB를 생성하고 시작 합니다.
             Thread threadB = new Thread(httpRequestHandlerB);
+            threadB.setName("threadB");
             threadB.start();
 
             long count = 0;
@@ -69,4 +71,5 @@ public class SimpleHttpServer {
             throw new RuntimeException(e);
         }
     }
+
 }
