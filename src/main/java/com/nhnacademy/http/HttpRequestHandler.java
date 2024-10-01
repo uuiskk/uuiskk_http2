@@ -25,14 +25,17 @@ import java.util.Objects;
 public class HttpRequestHandler implements Runnable {
     private final Socket client;
 
+    private final static String CRLF="\r\n";
+
     public HttpRequestHandler(Socket client) {
+        //TODO#4 생성자를 초기화 합니다.
         this.client = client;
     }
 
     @Override
     public void run() {
 
-        //TODO#4 simple-http-server-step1을 참고 하여 구현 합니다.
+        //TODO#5 exercise-simple-http-server-step1을 참고 하여 구현 합니다.
 
         /*
             <html>
@@ -71,11 +74,11 @@ public class HttpRequestHandler implements Runnable {
 
             //response header
             StringBuilder responseHeader = new StringBuilder();
-            responseHeader.append(String.format("HTTP/1.1 200 OK%s",System.lineSeparator()));
-            responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));
-            responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",System.lineSeparator()));
-            responseHeader.append(String.format("Connection: Closed%s",System.lineSeparator()));
-            responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),System.lineSeparator(),System.lineSeparator()));
+            responseHeader.append(String.format("HTTP/1.1 200 OK%s",CRLF));
+            responseHeader.append(String.format("Server: HTTP server/0.1%s",CRLF));
+            responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",CRLF));
+            responseHeader.append(String.format("Connection: Closed%s",CRLF));
+            responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),CRLF,CRLF));
 
             bufferedWriter.write(responseHeader.toString());
             bufferedWriter.write(responseBody.toString());
