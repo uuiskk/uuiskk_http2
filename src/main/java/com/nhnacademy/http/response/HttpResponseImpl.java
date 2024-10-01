@@ -24,34 +24,23 @@ public class HttpResponseImpl implements HttpResponse {
     //TODO#4 HttpResponse를 구현 합니다.
 
     private final Socket socket;
-    private final DataOutputStream out;
-    private String charset="UTF-8";
 
-    public HttpResponseImpl(Socket socket){
-        if(Objects.isNull(socket)){
-            throw new IllegalArgumentException("socket is null");
-        }
+    public HttpResponseImpl(Socket socket) {
         this.socket = socket;
-        try {
-            this.out =  new DataOutputStream (socket.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        PrintWriter printWriter =  new PrintWriter(out,false, Charset.forName(getCharacterEncoding()));
-        return printWriter;
+        return null;
     }
 
     @Override
     public void setCharacterEncoding(String charset) {
-        this.charset = charset;
+
     }
 
     @Override
     public String getCharacterEncoding() {
-        return charset;
+        return null;
     }
 }

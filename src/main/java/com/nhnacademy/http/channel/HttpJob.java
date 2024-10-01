@@ -36,13 +36,9 @@ public class HttpJob implements Executable {
             httpRequest, httpResponse, client 초기화 합니다.
          */
 
-        if(Objects.isNull(client)){
-            throw new IllegalArgumentException("client is null");
-        }
-
-        this.httpRequest = new HttpRequestImpl(client);
-        this.httpResponse = new HttpResponseImpl(client);
-        this.client = client;
+        this.httpRequest = null;
+        this.httpResponse = null;
+        this.client = null;
     }
 
     public HttpRequest getHttpRequest() {
@@ -66,50 +62,23 @@ public class HttpJob implements Executable {
              - ResponseUtils.createResponseHeader() - responseHeader 를 생성 합니다.
         */
         if(!ResponseUtils.isExist(httpRequest.getRequestURI())){
-            try {
-                //404 - not -found
-                responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
-                responseHeader = ResponseUtils.createResponseHeader(404,"utf-8", responseBody.getBytes("utf-8").length );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            //404 - not -found
+            responseBody = null;
+            responseHeader = null;
         }else{
             //파일이 존재 한다면..
             /*TODO#8 responseBody에 응답할 html 파일을 읽습니다.
               - ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI()) 이용하여 구현 합니다.
             */
-            try {
-                responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
 
-            /*TODO#10 ResponseHeader를 생성합니다.
-              ResponseUtils.createResponseHeader() 이용해서 생성합니다. responseHeader를 생성합니다.
-            */
-            try {
-                responseHeader = ResponseUtils.createResponseHeader(200,"UTF-8", responseBody.getBytes("utf-8").length);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            responseBody = null;
+            responseHeader = null;
         }
 
         //TODO#12 BufferWriter를 사용 하여 responseHeader, responseBody를 client에게 응답 합니다.
-        try(BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))) {
-            bufferedWriter.write(responseHeader);
-            bufferedWriter.write(responseBody);
-            bufferedWriter.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }finally {
-            //TODO#13 client에게 응답 후 cleint와 연결을 종료 합니다.
-            try {
-                if(Objects.nonNull(client) && client.isConnected()) {
-                    client.close();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        BufferedWriter bufferedWriter = null;
+
+        //TODO#13 client에게 응답 후 cleint와 연결을 종료 합니다.
+
     }
 }

@@ -62,32 +62,28 @@ class HttpRequestImplTest {
     @DisplayName("getMethod() = GET")
     void getMethod() {
         //TODO#101 request method를 검증 합니다.
-        String method = request.getMethod();
-        assertEquals("GET",method);
+
     }
 
     @Test
     @DisplayName("getParameterById : id=marco")
     void getParameterById() {
         //TODO#102 id queryString을 검증 합니다.
-        String id = request.getParameter("id");
-        assertEquals("marco",id);
+
     }
 
     @Test
     @DisplayName("getParameterByName : name=마르코")
     void getParameterByName() {
         //TODO#103 name queryString을 검증 합니다.
-        String name = request.getParameter("name");
-        assertEquals("마르코",name);
+
     }
 
     @Test
     @DisplayName("getParameterByAge : age=40")
     void getParameterByAge() {
         //TODO#104 age queryString을 검증 합니다.
-        String age = request.getParameter("age");
-        assertEquals(String.valueOf(40),age);
+
     }
 
     @Test
@@ -130,7 +126,7 @@ class HttpRequestImplTest {
     @DisplayName("URI=/index.html")
     void getRequestURI(){
         //TODO#105  requestURI()를 검증 합니다.
-        assertEquals("/index.html",request.getRequestURI());
+
     }
 
 }
