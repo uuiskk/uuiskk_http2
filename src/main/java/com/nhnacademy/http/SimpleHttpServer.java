@@ -29,11 +29,13 @@ public class SimpleHttpServer {
     }
 
     public SimpleHttpServer(int port) {
+        //TODO#1 - port < 0 IllegalArgumentException이 발생 합니다. 적절한 Error Message를 작성하세요
         if(port<=0){
             throw new IllegalArgumentException(String.format("invalid port :%d",port));
         }
-        this.port = port;
 
+        //TODO#2 serverSocket을 생성합니다.
+        this.port = port;
         try {
             serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
@@ -42,13 +44,13 @@ public class SimpleHttpServer {
     }
 
     public synchronized void start() throws IOException {
-        //TODO#1 - SocketServer를 생성 합니다.
         try{
-
+            //TODO#3 interrupt가 발생하면 application이 종료 합니다. while 조건을 수정하세요.
             while(!Thread.currentThread().isInterrupted()){
+                //TODO#4 - client가 연결될 때 까지 대기 합니다.
                 Socket client = serverSocket.accept();
 
-                //TODO#2 - Client와 서버가 연결 되면 HttpRequestHandler를 이용해서 Thread을 생성하고 실행 합니다.
+                //TODO#5 - Client와 서버가 연결 되면 HttpRequestHandler를 이용해서 Thread을 생성하고 실행 합니다.
                 Thread thread = new Thread(new HttpRequestHandler(client));
                 thread.start();
             }
