@@ -68,12 +68,7 @@ class NotFoundHttpServiceTest {
 
         //TODO#105- response 검증, httpStatuscode: 404, description: Not Found 검증 합니다.
         Assertions.assertAll(
-            ()->{
-                Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.NOT_FOUND.getCode())));
-            },
-            ()->{
-                Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.NOT_FOUND.getDesription())));
-            }
+
         );
     }
 }
