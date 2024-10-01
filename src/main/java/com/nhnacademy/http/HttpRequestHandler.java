@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.cert.CRL;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
@@ -25,6 +26,8 @@ public class HttpRequestHandler implements Runnable {
 
     private final Queue<Socket> requestQueue;
     private final int MAX_QUEUE_SIZE=10;
+
+    private static final String CRLF="\r\n";
 
     public HttpRequestHandler() {
         //TODO#1 requestQueue를 초기화 합니다. Java에서 Queue의 구현체인 LinkedList를 사용 합니다.
@@ -74,7 +77,7 @@ public class HttpRequestHandler implements Runnable {
             //TODO#7 getRequest()를 호출하여 client를 requestQueue로 부터 얻습니다., requestQueue가 비어있다면 대기 합니다.
             Socket client = getRequest();
 
-            //다음과 같은 message가 응답되도록 구현 합니다.
+            //TODO#8 다음과 같은 message가 응답되도록 구현 합니다. exercise-step2를 참고하세요
             //<html><body><h1>{threadA}:hello java</h1></body></html>
             //<html><body><h1>{threadB}:hello java</h1></body></html>
 
@@ -101,11 +104,11 @@ public class HttpRequestHandler implements Runnable {
 
                 StringBuilder responseHeader = new StringBuilder();
 
-                responseHeader.append(String.format("HTTP/1.0 200 OK%s", System.lineSeparator()));
-                responseHeader.append(String.format("Server: HTTP server/0.1%s", System.lineSeparator()));
-                responseHeader.append(String.format("Content-type: text/html; charset=%s%s", "UTF-8", System.lineSeparator()));
-                responseHeader.append(String.format("Connection: Closed%s", System.lineSeparator()));
-                responseHeader.append(String.format("Content-Length:%d %s%s", responseBody.length(), System.lineSeparator(), System.lineSeparator()));
+                responseHeader.append(String.format("HTTP/1.0 200 OK%s", CRLF));
+                responseHeader.append(String.format("Server: HTTP server/0.1%s", CRLF));
+                responseHeader.append(String.format("Content-type: text/html; charset=%s%s", "UTF-8", CRLF));
+                responseHeader.append(String.format("Connection: Closed%s", CRLF));
+                responseHeader.append(String.format("Content-Length:%d %s%s", responseBody.length(), CRLF, CRLF));
 
                 bufferedWriter.write(responseHeader.toString());
                 bufferedWriter.write(responseBody.toString());

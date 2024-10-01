@@ -41,7 +41,7 @@ class SimpleHttpServerTest {
 
     @Test
     @Order(1)
-    @DisplayName("threadA - 짝수요청")
+    @DisplayName("threadB - 홀수요청")
     void requestEvenNumber() throws URISyntaxException, IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -50,12 +50,14 @@ class SimpleHttpServerTest {
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         log.debug("response:{}",response.body());
-        Assertions.assertTrue(response.body().toString().toLowerCase().contains("threada"));
+
+        //TODO#105 threadB 문자열이 포함되었는지 검증 합니다.
+        Assertions.assertTrue(response.body().toString().toLowerCase().contains("threadb"));
     }
 
     @Test
     @Order(2)
-    @DisplayName("threadB - 홀수요청")
+    @DisplayName("threadB - 짝수요청")
     void requestOddNumber() throws URISyntaxException, IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -64,13 +66,16 @@ class SimpleHttpServerTest {
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         log.debug("response:{}",response.body());
-        Assertions.assertTrue(response.body().toString().toLowerCase().contains("threadb"));
+
+        //TODO#106 threadA 문자열이 포함되었는지 검증 합니다.
+        Assertions.assertTrue(response.body().toString().toLowerCase().contains("threada"));
     }
 
     @Test
     @Order(3)
     @DisplayName("status code : 200 ok")
     void request1() throws URISyntaxException, IOException, InterruptedException {
+        //TODO#107 response.statusCode()인지 검증 합니다.
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(String.format("http://localhost:%d",TEST_PORT)))
@@ -85,6 +90,8 @@ class SimpleHttpServerTest {
     @Order(4)
     @DisplayName("response: hello java")
     void request2() throws URISyntaxException, IOException, InterruptedException {
+        //TODO#108 response.body()에 'hello' or 'java' 문자열이 포함되는지 검증 합니다.
+
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(String.format("http://localhost:%d",TEST_PORT)))
@@ -106,6 +113,8 @@ class SimpleHttpServerTest {
     @Order(5)
     @DisplayName("content-type")
     void request3() throws URISyntaxException, IOException, InterruptedException {
+        //TODO#109 Content-Type header가 text/html 인지 검증 합니다.
+
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(String.format("http://localhost:%d",TEST_PORT)))
@@ -124,6 +133,8 @@ class SimpleHttpServerTest {
     @Order(6)
     @DisplayName("charset utf-8")
     void request4() throws URISyntaxException, IOException, InterruptedException {
+        //TODO#110 charset이 utf-8인지 검증 합니다.
+
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(String.format("http://localhost:%d",TEST_PORT)))

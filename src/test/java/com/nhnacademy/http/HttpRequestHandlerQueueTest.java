@@ -54,6 +54,7 @@ class HttpRequestHandlerQueueTest {
     @Test
     @DisplayName("addRequest, queueSize : 9 -> 10")
     void addRequest() throws Exception {
+        //Socket10 10번째 cleint를 추가 합니다.
         httpRequestHandler.addRequest(new TestSocket("socket10"));
         //Queue<Socket> requestQueue
 
@@ -61,6 +62,7 @@ class HttpRequestHandlerQueueTest {
         Queue<Socket> requestQueue= (Queue<Socket>) readFieldValue.get();
 
         log.debug("requestQueue-size:{}",requestQueue.size());
+        //TODO#101 - requestQueue.size() 10인지 검증 합니다.
         Assertions.assertEquals(10,requestQueue.size());
 
     }
@@ -68,6 +70,7 @@ class HttpRequestHandlerQueueTest {
     @Test
     @DisplayName("getRequest : socket0")
     void getRequest(){
+        //TODO#102 httpRequestHandler.getRequest(); 호출 했을 때 socket0 반환되는지 검증 합니다.
         TestSocket actual = (TestSocket) httpRequestHandler.getRequest();
         Assertions.assertEquals("socket0", actual.getName());
     }
@@ -105,7 +108,7 @@ class HttpRequestHandlerQueueTest {
         });
         consumer.start();
 
-        //producer or consumer 실행 중이라면 대기 합니다. yield()를 이용해서 구현하세요.
+        //TODO#103 producer or consumer thread가 실행 중 이라면 대기 합니다. yield()를 이용해서 구현 하세요.
         while (producer.isAlive() || consumer.isAlive()){
             Thread.yield();
         }
@@ -113,6 +116,7 @@ class HttpRequestHandlerQueueTest {
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(HttpRequestHandler.class, "requestQueue", httpRequestHandler);
         Queue<Socket> requestQueue= (Queue<Socket>) readFieldValue.get();
 
+        //TODO#104 requestQueue.size()가 10인지 검증 합니다.
         Assertions.assertEquals(10,requestQueue.size());
     }
 
