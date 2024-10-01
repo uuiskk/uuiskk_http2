@@ -12,7 +12,6 @@
 
 package com.nhnacademy.http.service;
 
-import com.nhnacademy.http.HttpRequestHandler;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
@@ -23,18 +22,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-
 @Slf4j
-class IndexHttpServiceTest {
+class MethodNotAllowedServiceTest {
     HttpService httpService;
     HttpRequest httpRequest;
     HttpResponse httpResponse;
@@ -43,7 +38,7 @@ class IndexHttpServiceTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        httpService = new IndexHttpService();
+        httpService = new MethodNotAllowedService();
 
         httpRequest = Mockito.mock(HttpRequestImpl.class);
         Mockito.when(httpRequest.getRequestURI()).thenReturn("/index.html");
@@ -52,7 +47,6 @@ class IndexHttpServiceTest {
 
         // StringWriter를 사용하여 커스텀 버퍼 생성
         stringWriter = new StringWriter();
-        //printWriter에 stringWriter 주입.
         printWriter = new PrintWriter(stringWriter);
         Mockito.when(httpResponse.getWriter()).thenReturn(printWriter);
 
@@ -61,11 +55,11 @@ class IndexHttpServiceTest {
     @Test
     @DisplayName("instance of HttpService")
     void constructor(){
-        Assertions.assertInstanceOf(HttpService.class, new IndexHttpService());
+        Assertions.assertInstanceOf(HttpService.class, new MethodNotAllowedService());
     }
 
     @Test
-    @DisplayName("doGet")
+    @DisplayName("doGet : 405 method not allowed")
     void doGet() {
         Mockito.when(httpRequest.getMethod()).thenReturn("GET");
 
@@ -73,26 +67,16 @@ class IndexHttpServiceTest {
         String response = stringWriter.toString();
 
         log.debug("response:{}",response);
-        //TODO#101- response 검증, httpStatuscode: 200, description: OK 검증 합니다.
+
+        //TODO#106- response 검증, httpStatuscode: 405, description: Method Not Allowed 검증 합니다.
+
         Assertions.assertAll(
                 ()->{
-                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.OK.getCode())));
+                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.METHOD_NOT_ALLOWED.getCode())));
                 },
                 ()->{
-                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.OK.getDesription())));
+                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.METHOD_NOT_ALLOWED.getDesription())));
                 }
         );
     }
-
-    @Test
-    @DisplayName("doPost : 405 method not allowed")
-    void doPost(){
-        //TODO#102- response 검증,  request method = POST, RuntimeException이 발생 합니다.
-
-        Mockito.when(httpRequest.getMethod()).thenReturn("POST");
-        Assertions.assertThrows(RuntimeException.class,()->{
-            httpService.service(httpRequest,httpResponse);
-        });
-    }
-
 }

@@ -22,7 +22,9 @@ import java.io.PrintWriter;
 
 @Slf4j
 public class IndexHttpService implements HttpService{
-    //TODO#2 /index.html을  처리하는 HttpService 입니다.
+    /*TODO#2 /index.html을  처리하는 HttpService 입니다.
+        - doGet()method를 구현 합니다.
+    */
 
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
@@ -31,7 +33,7 @@ public class IndexHttpService implements HttpService{
         String responseBody = null;
 
         try {
-            responseBody = ResponseUtils.tryGetBodyFormFile(httpRequest.getRequestURI());
+            responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

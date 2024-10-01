@@ -16,6 +16,7 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.HttpResponseImpl;
+import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,7 @@ class InfoHttpServiceTest {
 
     }
 
+    @Test
     @DisplayName("instance of HttpService")
     void constructor(){
         Assertions.assertInstanceOf(HttpService.class, new InfoHttpService());
@@ -68,12 +70,23 @@ class InfoHttpServiceTest {
         String response = stringWriter.toString();
 
         log.debug("response:{}",response);
-        Assertions.assertTrue(response.contains("200 OK"));
+
+        //TODO#103- response 검증, httpStatuscode: 200, description: OK 검증 합니다.
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.OK.getCode())));
+                },
+                ()->{
+                    Assertions.assertTrue(response.contains(String.valueOf(ResponseUtils.HttpStatus.OK.getDesription())));
+                }
+        );
     }
 
     @Test
     @DisplayName("doPost : 405 method not allowed")
     void doPost(){
+        //TODO#104- response 검증,  request method = POST, RuntimeException이 발생 합니다.
+
         Mockito.when(httpRequest.getMethod()).thenReturn("POST");
         Assertions.assertThrows(RuntimeException.class,()->{
             httpService.service(httpRequest,httpResponse);
