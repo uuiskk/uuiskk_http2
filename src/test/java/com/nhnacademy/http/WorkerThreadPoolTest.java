@@ -35,7 +35,7 @@ class WorkerThreadPoolTest {
     @Order(1)
     @DisplayName("poolSize < 0")
     void constructorTest1(){
-        //TODO# poolsize <0  IllegalArgumentException 발생하는지 검증 합니다.
+        //TODO#101 poolsize <0  IllegalArgumentException 발생하는지 검증 합니다.
         Assertions.assertThrows(IllegalArgumentException.class,()->{
             new WorkerThreadPool(-9,null);
         });
@@ -45,7 +45,7 @@ class WorkerThreadPoolTest {
     @Order(2)
     @DisplayName("runnable  parameter check ")
     void constructorTest2(){
-        //TODO# runable parameter null 이면 IllegalArgumentException 발생하는지 검증 합니다.
+        //TODO#102 runable parameter null 이면 IllegalArgumentException 발생하는지 검증 합니다.
         Assertions.assertThrows(IllegalArgumentException.class,()->{
             new WorkerThreadPool(1,null);
         });
@@ -58,7 +58,7 @@ class WorkerThreadPoolTest {
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(WorkerThreadPool.class, "workerThreads",threadPool);
         Thread[] workerThreads = (Thread[]) readFieldValue.get();
 
-        //TODO 기본 생성자로 생성한  threadList poolSize가 10으로 생성되었는지 검증 합니다.
+        //TODO#103 기본 생성자로 생성한  threadList poolSize가 10으로 생성되었는지 검증 합니다.
         Assertions.assertEquals(10,workerThreads.length);
     }
 
@@ -71,7 +71,7 @@ class WorkerThreadPoolTest {
         Thread[] workerThreads = (Thread[]) readFieldValue.get();
         int aliveCount = 0;
 
-        //TODO# workerThreads의 각각의 thread가 isAlive()면 aliveCount++ 될 수 있또록 구현
+        //TODO#104 workerThreads의 각각의 thread가 isAlive()면 aliveCount++ 될 수 있또록 구현
         for(Thread thread : workerThreads){
             if(thread.isAlive()){
                 aliveCount ++;
@@ -92,7 +92,7 @@ class WorkerThreadPoolTest {
 
         int terminatedCount = 0;
 
-        //TODO threadList의 각각의 thread의 상태가 TERMINATED이면 terminatedCount++ 될 수 있도록 구현 합니다.
+        //TODO#105 threadList의 각각의 thread의 상태가 TERMINATED이면 terminatedCount++ 될 수 있도록 구현 합니다.
         for(Thread thread : workerThreads){
             if(thread.getState().equals(Thread.State.TERMINATED)){
                 terminatedCount ++;

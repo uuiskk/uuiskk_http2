@@ -17,11 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.security.cert.CRL;
 import java.util.Objects;
 
 @Slf4j
 public class HttpJob implements Executable {
     private final Socket client;
+    private static final String CRLF="\r\n";
 
     public HttpJob(Socket client) {
         if(Objects.isNull(client)){
@@ -36,7 +38,8 @@ public class HttpJob implements Executable {
 
     @Override
     public void execute(){
-        //TODO#10 HttpJob는 execute() method를 구현 합니다.
+
+        //TODO#23 HttpJob는 execute() method를 구현 합니다.
         //<html><body><h1>thread-0:hello java</h1></body>
         //<html><body><h1>thread-1:hello java</h1></body>
         //<html><body><h1>thread-2:hello java</h1></body>
@@ -58,18 +61,18 @@ public class HttpJob implements Executable {
 
             StringBuilder responseBody = new StringBuilder();
             responseBody.append("<html>");
-            responseBody.append("<body>");
-            responseBody.append("<h1>hello java</h1>");
-            responseBody.append("</body>");
+                responseBody.append("<body>");
+                    responseBody.append(String.format("<h1>{%s}hello java</h1>",Thread.currentThread().getName()));
+                responseBody.append("</body>");
             responseBody.append("</html>");
 
             StringBuilder responseHeader = new StringBuilder();
 
-            responseHeader.append(String.format("HTTP/1.0 200 OK%s",System.lineSeparator()));
-            responseHeader.append(String.format("Server: HTTP server/0.1%s",System.lineSeparator()));
-            responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",System.lineSeparator()));
-            responseHeader.append(String.format("Connection: Closed%s",System.lineSeparator()));
-            responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.length(),System.lineSeparator(),System.lineSeparator()));
+            responseHeader.append(String.format("HTTP/1.0 200 OK%s", CRLF));
+            responseHeader.append(String.format("Server: HTTP server/0.1%s",CRLF));
+            responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",CRLF));
+            responseHeader.append(String.format("Connection: Closed%s",CRLF));
+            responseHeader.append(String.format("Content-Length:%d %s%s",CRLF,CRLF));
 
             bufferedWriter.write(responseHeader.toString());
             bufferedWriter.write(responseBody.toString());
