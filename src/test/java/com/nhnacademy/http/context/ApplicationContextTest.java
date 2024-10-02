@@ -25,32 +25,53 @@ class ApplicationContextTest {
     @BeforeEach
     void setUp(){
         Context context = ContextHolder.getApplicationContext();
+        //TODO#101 context에 indexHttpService를 등록 합니다.
+        //name : indexHttpService, object: new IndexHttpService()
         context.setAttribute("indexHttpService", new IndexHttpService());
     }
 
     @Test
     @Order(1)
-    void setAttribute() {
+    void setAttribute1() {
         Context context = ContextHolder.getApplicationContext();
         context.setAttribute("name",new Object());
+
+        //TODO#102 context에 "name"에 해당되는 객체가 존재하는지 검증 합니다.
         Assertions.assertTrue(Objects.nonNull(context.getAttribute("name")));
     }
 
     @Test
     @Order(2)
+    @DisplayName("setAttribute object is null")
+    void setAttribute2() {
+        Context context = ContextHolder.getApplicationContext();
+
+        //TODO#103 context에 다음과 같이 null Object를 동록시 IllegalArgumentException이 발생하는지 검증 합니다.
+        // - context.setAttribute("something",null);
+
+        Assertions.assertThrows(IllegalArgumentException.class,()->{
+            context.setAttribute("something",null);
+        });
+    }
+
+    @Test
+    @Order(3)
     void removeAttribute() {
         Context context = ContextHolder.getApplicationContext();
         String name = "indexHttpService";
 
         context.removeAttribute(name);
+
+        //TODO#104 name에 해당되는 객체를 remove 했습니다. name에 해당되는 객체를 다음과 같이 context로 부터 획득하려고 할 때 ObjectNotFoundException이 발생하는지 검증 합니다.
+        // - context.getAttribute(name);
         Assertions.assertThrows(ObjectNotFoundException.class,()->{
             context.getAttribute(name);
         });
     }
 
     @Test
-    @Order(3)
-    void getAttribute() {
+    @Order(4)
+    void getAttribute1() {
         Context context = ContextHolder.getApplicationContext();
         InfoHttpService infoHttpService = new InfoHttpService();
         context.setAttribute("infoHttpService", infoHttpService);
@@ -58,11 +79,45 @@ class ApplicationContextTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
+    @DisplayName("getAttribute, object not found exception")
+    void getAttribute2() {
+        Context context = ContextHolder.getApplicationContext();
+        Assertions.assertThrows(ObjectNotFoundException.class, ()->{
+            context.getAttribute("something");
+        });
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("getAttribute name is null or empty")
+    void getAttribute3(){
+        Context context = ContextHolder.getApplicationContext();
+        //TODO#105 getAttribute를 다음과 같이 호출할 때 IllegalArgumentException Exception이 발생하는지 검증하세요
+        // - context.getAttribute(null);
+        // - context.getAttribute("");
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertThrows(IllegalArgumentException.class, ()->{
+                        context.getAttribute(null);
+                    });
+                },
+                ()->{
+                    Assertions.assertThrows(IllegalArgumentException.class, ()->{
+                        context.getAttribute("");
+                    });
+                }
+        );
+    }
+
+    @Test
+    @Order(7)
     @DisplayName("shared ContextHolder")
     void sharedContextHolder() throws InterruptedException {
 
         Thread thread1 = new Thread(()->{
+            //TODO#106 thread내에서 context에 counter 값을 10으로 설정 합니다.
             Context context = ContextHolder.getApplicationContext();
             context.setAttribute("counter", 10);
         });
@@ -71,6 +126,7 @@ class ApplicationContextTest {
         thread1.join();
 
         Thread thread2 = new Thread(()->{
+            //TODO#107 thread내에서 context에 counter = counter+1 후  context에 재 할당 합니다.
             Context context = ContextHolder.getApplicationContext();
             int counter = (int) context.getAttribute("counter");
             counter = counter + 1;

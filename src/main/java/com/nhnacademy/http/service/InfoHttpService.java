@@ -31,7 +31,7 @@ public class InfoHttpService implements HttpService {
         String responseBody = null;
 
         try {
-            responseBody = ResponseUtils.tryGetBodyFormFile(httpRequest.getRequestURI());
+            responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,9 +49,8 @@ public class InfoHttpService implements HttpService {
         responseBody = responseBody.replace("${name}",name);
         responseBody = responseBody.replace("${age}",age);
 
-        //TODO#9 CounterUtils.increaseAndGet()를 이용해서 context에 있는 counter 값을 증가시키고, 반환되는 값을 info.html에 반영 합니다.
+        //TODO#10 CounterUtils.increaseAndGet()를 이용해서 context에 있는 counter 값을 증가시키고, 반환되는 값을 info.html에 반영 합니다.
         // ${count} <-- counter 값을 치환 합니다.
-
         responseBody = responseBody.replace("${count}", String.valueOf(CounterUtils.increaseAndGet()));
 
         //Header-설정

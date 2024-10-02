@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 //TODO#2 - Context를 구현합니다.
+//Context에는 객체를 생성 후 등록 / 삭제 할 수 있습니다. 즉 공유할 수 있는 환경 입니다.
 public class ApplicationContext  implements Context{
     ConcurrentMap<String, Object> objectMap;
 
@@ -29,6 +30,7 @@ public class ApplicationContext  implements Context{
     @Override
     public void setAttribute(String name, Object object) {
         objectNameCheck(name);
+        objectValueCheck(object);
         objectMap.put(name,object);
     }
 
@@ -53,6 +55,11 @@ public class ApplicationContext  implements Context{
     private void objectNameCheck(String name){
         if(Objects.isNull(name) || name.length()==0){
             throw new IllegalArgumentException(name);
+        }
+    }
+    private void objectValueCheck(Object o){
+        if(Objects.isNull(o)){
+            throw new IllegalArgumentException("value is null");
         }
     }
 }
