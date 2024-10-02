@@ -56,7 +56,7 @@ class ApplicationContextTest {
 
     @Test
     @Order(3)
-    void removeAttribute() {
+    void removeAttribute1() {
         Context context = ContextHolder.getApplicationContext();
         String name = "indexHttpService";
 
@@ -71,6 +71,28 @@ class ApplicationContextTest {
 
     @Test
     @Order(4)
+    @DisplayName("removeAttribute name is {null or empty}")
+    void removeAttribute2() {
+        //TODO#105 context.removeAttribute(""); or context.removeAttribute(null); 실행할 때  IllegalArgumentException 발생하는지 검증 합니다.
+
+        Context context = ContextHolder.getApplicationContext();
+        String name = "indexHttpService";
+        Assertions.assertAll(
+            ()->{
+                Assertions.assertThrows(IllegalArgumentException.class,()->{
+                    context.removeAttribute("");
+                });
+            },
+            ()->{
+                Assertions.assertThrows(IllegalArgumentException.class,()->{
+                    context.removeAttribute(null);
+                });
+            }
+        );
+    }
+
+    @Test
+    @Order(5)
     void getAttribute1() {
         Context context = ContextHolder.getApplicationContext();
         InfoHttpService infoHttpService = new InfoHttpService();
@@ -79,7 +101,7 @@ class ApplicationContextTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("getAttribute, object not found exception")
     void getAttribute2() {
         Context context = ContextHolder.getApplicationContext();
@@ -89,11 +111,11 @@ class ApplicationContextTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     @DisplayName("getAttribute name is null or empty")
     void getAttribute3(){
         Context context = ContextHolder.getApplicationContext();
-        //TODO#105 getAttribute를 다음과 같이 호출할 때 IllegalArgumentException Exception이 발생하는지 검증하세요
+        //TODO#106 getAttribute를 다음과 같이 호출할 때 IllegalArgumentException Exception이 발생하는지 검증하세요
         // - context.getAttribute(null);
         // - context.getAttribute("");
 
@@ -112,12 +134,11 @@ class ApplicationContextTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     @DisplayName("shared ContextHolder")
     void sharedContextHolder() throws InterruptedException {
-
         Thread thread1 = new Thread(()->{
-            //TODO#106 thread내에서 context에 counter 값을 10으로 설정 합니다.
+            //TODO#107 thread내에서 context에 counter 값을 10으로 설정 합니다.
             Context context = ContextHolder.getApplicationContext();
             context.setAttribute("counter", 10);
         });
@@ -126,7 +147,7 @@ class ApplicationContextTest {
         thread1.join();
 
         Thread thread2 = new Thread(()->{
-            //TODO#107 thread내에서 context에 counter = counter+1 후  context에 재 할당 합니다.
+            //TODO#108 thread내에서 context에 counter = counter+1 후  context에 재 할당 합니다.
             Context context = ContextHolder.getApplicationContext();
             int counter = (int) context.getAttribute("counter");
             counter = counter + 1;
