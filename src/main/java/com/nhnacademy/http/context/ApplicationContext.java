@@ -20,46 +20,26 @@ import java.util.concurrent.ConcurrentMap;
 
 //TODO#2 - Context를 구현합니다.
 //Context에는 객체를 생성 후 등록 / 삭제 할 수 있습니다. 즉 공유할 수 있는 환경 입니다.
-public class ApplicationContext  implements Context{
+public class ApplicationContext  implements Context {
     ConcurrentMap<String, Object> objectMap;
 
     public ApplicationContext() {
-        this.objectMap = new ConcurrentHashMap<>();
+        this.objectMap = null;
     }
+
 
     @Override
     public void setAttribute(String name, Object object) {
-        objectNameCheck(name);
-        objectValueCheck(object);
-        objectMap.put(name,object);
+
     }
 
     @Override
-        public void removeAttribute(String name) {
-            objectNameCheck(name);
-            objectMap.remove(name);
+    public void removeAttribute(String name) {
+
     }
 
     @Override
     public Object getAttribute(String name) {
-        //object가 존재하지 않는다면 ObjectNotFoundException 예외가 발생합니다.
-
-        objectNameCheck(name);
-        Object object =  objectMap.get(name);
-        if(Objects.isNull(object)){
-            throw new ObjectNotFoundException(name);
-        }
-        return object;
-    }
-
-    private void objectNameCheck(String name){
-        if(Objects.isNull(name) || name.length()==0){
-            throw new IllegalArgumentException(name);
-        }
-    }
-    private void objectValueCheck(Object o){
-        if(Objects.isNull(o)){
-            throw new IllegalArgumentException("value is null");
-        }
+        return null;
     }
 }
