@@ -50,7 +50,7 @@ public class WorkerThreadPool {
         for(int i=0; i<poolSize; i++){
             //TODO#6 workerThread 생성및 이름 설정 :  thread-1,thread-2, thread-3 ...
             workerThreads[i] = new Thread(httpRequestHandler);
-            workerThreads[i].setName("thread-%d" + i+1);
+            workerThreads[i].setName("thread-" + (i+1));
 
         }
     }
