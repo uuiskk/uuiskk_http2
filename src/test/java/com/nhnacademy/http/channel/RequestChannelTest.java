@@ -32,14 +32,16 @@ class RequestChannelTest {
         long queueSize = (long) readFieldValue.get();
 
         //TODO#113 기본 생성자를 이용해서 생성된 requestChannel의 queueSize가 10인지 검증 합니다.
-
+        Assertions.assertEquals(10, queueSize);
     }
 
     @Test
     @DisplayName("queueSize=-5")
     void constructorTest2(){
         //TODO#114 RequestChannel 객체 생성시 queueSize -5 이면 IllegalArgumentException 발생하는지 검증 합니다.
-
+        Assertions.assertThrows(IllegalArgumentException.class, ()->{
+            new RequestChannel(-5);
+        });
     }
 
     @Test
@@ -47,7 +49,9 @@ class RequestChannelTest {
     void addRequest_5_times() throws Exception {
         RequestChannel requestChannel = new RequestChannel();
         //TODO#115 requestChannel에 5개의 아무것도 실행하지 않는 작업을(Executable) 등록 합니다. Executable : ()->{} 사용합니다.
-
+        for(int i = 0; i < 5; i++){
+            requestChannel.addHttpJob(()->{});
+        }
 
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(RequestChannel.class, "requestQueue", requestChannel);
         Queue queue = (Queue) readFieldValue.get();
@@ -61,7 +65,11 @@ class RequestChannelTest {
         RequestChannel requestChannel = new RequestChannel(10);
 
         //TODO#116 requestChannel에 11개의 빈 작업을 등록하는 thread를 구현 하세요. 빈 작업: ()->{}
-        Thread thread = null;
+        Thread thread = new Thread(()->{
+            for(int i = 0; i < 11; i++){
+                requestChannel.addHttpJob(()->{});
+            }
+        });
 
         thread.start();
         Thread.sleep(2000);
@@ -83,7 +91,8 @@ class RequestChannelTest {
             requestChannel.addHttpJob(()->{});
         }
         //TODO#117 requestChannel 작업을 할당 받아 실행 하세요.
-        Executable executable = null;
+        Executable executable = requestChannel.getHttpJob();
+        executable.execute();
 
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(RequestChannel.class, "requestQueue", requestChannel);
         Queue queue = (Queue) readFieldValue.get();
@@ -109,7 +118,7 @@ class RequestChannelTest {
         log.debug("{} : {}", thread.getName(),thread.getState());
 
         //TODO#118 thread의 상태가 WAITING 상태인지 검증 합니다.
-
+        Assertions.assertEquals(Thread.State.WAITING, thread.getState());
 
         thread.interrupt();
     }

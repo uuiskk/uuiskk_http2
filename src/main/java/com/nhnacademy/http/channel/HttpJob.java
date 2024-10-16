@@ -44,6 +44,50 @@ public class HttpJob implements Executable {
         //<html><body><h1>thread-1:hello java</h1></body>
         //<html><body><h1>thread-2:hello java</h1></body>
         //....
+            try(
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+            ){
+                StringBuilder requestBuilder = new StringBuilder();
+                log.debug("------HTTP-REQUEST_start()");
+                while(true) {
+                    String line = bufferedReader.readLine();
+                    requestBuilder.append(line);
+                    log.debug("{}", line);
 
+                    if(Objects.isNull(line) || line.isEmpty()) {
+                        break;
+                    }
+                }
+                log.debug("------HTTP-REQUEST_end()");
+
+                StringBuilder responseBody = new StringBuilder();
+
+                responseBody.append("<html>");
+                responseBody.append("<body>");
+                responseBody.append("<h1>");
+                responseBody.append("<h1>" + Thread.currentThread().getName() + ":hello java</h1>");
+                responseBody.append("</h1>");
+                responseBody.append("</body>");
+                responseBody.append("</html>");
+
+                StringBuilder responseHeader = new StringBuilder();
+
+                responseHeader.append(String.format("HTTP/1.0 200 OK%s",CRLF));
+                responseHeader.append(String.format("Server: HTTP server/0.1%s",CRLF));
+                responseHeader.append(String.format("Content-type: text/html; charset=%s%s","UTF-8",CRLF));
+                responseHeader.append(String.format("Connection: Closed%s",CRLF));
+                responseHeader.append(String.format("Content-Length:%d %s%s",responseBody.toString().getBytes().length,CRLF,CRLF));
+
+                bufferedWriter.write(responseHeader.toString());
+                bufferedWriter.write(responseBody.toString());
+
+                bufferedWriter.flush();
+
+                log.debug("header:{}",responseHeader);
+                log.debug("body:{}",responseBody);
+            } catch (IOException e) {
+                log.error("socket error : {}", e);
+        }
     }
 }
