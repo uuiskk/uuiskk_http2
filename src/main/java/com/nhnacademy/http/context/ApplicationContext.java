@@ -24,22 +24,33 @@ public class ApplicationContext  implements Context {
     ConcurrentMap<String, Object> objectMap;
 
     public ApplicationContext() {
-        this.objectMap = null;
+        this.objectMap = new ConcurrentHashMap<>();
     }
-
 
     @Override
     public void setAttribute(String name, Object object) {
-
+        if(Objects.isNull(object)){
+            throw new IllegalArgumentException();
+        }
+        objectMap.put(name, object);
     }
 
     @Override
     public void removeAttribute(String name) {
-
+        if(Objects.isNull(name) || name.isBlank()){
+            throw new IllegalArgumentException();
+        }
+        objectMap.remove(name);
     }
 
     @Override
     public Object getAttribute(String name) {
-        return null;
+        if(Objects.isNull(name) || name.isBlank()){
+            throw new IllegalArgumentException();
+        }
+        if(!objectMap.containsKey(name)){
+            throw new ObjectNotFoundException("존재하지 않는 컨텍스트");
+        }
+        return objectMap.get(name);
     }
 }

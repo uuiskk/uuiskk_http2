@@ -25,7 +25,11 @@ public class CounterUtils {
          - context에 증가된 값을 저장 합니다.
          - increaseAndGet() method는 동기화 처리 되어야 합니다.
         */
+        Context context = ContextHolder.getApplicationContext();
+        long count = (long)context.getAttribute(CONTEXT_COUNTER_NAME);
+        count++;
+        context.setAttribute(CONTEXT_COUNTER_NAME, count);
 
-        return 0l;
+        return count;
     }
 }
