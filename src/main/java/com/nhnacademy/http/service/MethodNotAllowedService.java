@@ -34,14 +34,20 @@ public class MethodNotAllowedService implements HttpService{
     public void service(HttpRequest httpRequest, HttpResponse httpResponse) {
         //Body-설정
         String responseBody = null;
-
+        try {
+            responseBody = ResponseUtils.tryGetBodyFromFile("/405.html");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         //Header-설정
-        String responseHeader = null;
+        String responseHeader = ResponseUtils.createResponseHeader(405, httpResponse.getCharacterEncoding(), responseBody.length());
 
         //PrintWriter 응답
-        try(PrintWriter bufferedWriter = null;){
-
+        try(PrintWriter bufferedWriter = httpResponse.getWriter();){
+            bufferedWriter.write(responseHeader);
+            bufferedWriter.write(responseBody);
+            bufferedWriter.flush();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
