@@ -45,12 +45,17 @@ public class ApplicationContext  implements Context {
 
     @Override
     public Object getAttribute(String name) {
-        if(Objects.isNull(name) || name.isBlank()){
-            throw new IllegalArgumentException();
+        objectNameCheck(name);
+        Object object = objectMap.get(name);
+        if(object == null){
+            throw new ObjectNotFoundException(name + ": 존재하지 않는 컨텍스트");
         }
-        if(!objectMap.containsKey(name)){
-            throw new ObjectNotFoundException("존재하지 않는 컨텍스트");
+        return object;
+    }
+
+    private void objectNameCheck(String name){
+        if(Objects.isNull(name) || name.length()==0){
+            throw new IllegalArgumentException(name);
         }
-        return objectMap.get(name);
     }
 }

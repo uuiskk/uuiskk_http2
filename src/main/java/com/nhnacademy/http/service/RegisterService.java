@@ -54,8 +54,8 @@ public class RegisterService implements HttpService{
     @Override
     public void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
         StringBuilder builder = new StringBuilder();
-        builder.append("HTTP/1.1 301 Moved Permanently");
-        builder.append("Location: http://localhost:8080/index.html?userId=marco");
+        builder.append("HTTP/1.1 301 Moved Permanently\n");
+        builder.append(String.format("Location: http://localhost:8080/index.html?userId=%s \n", httpRequest.getParameter("userId")));
 
         try(PrintWriter bufferedWriter = httpResponse.getWriter();){
             bufferedWriter.write(builder.toString());
