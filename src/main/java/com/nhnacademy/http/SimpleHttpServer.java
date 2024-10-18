@@ -63,6 +63,7 @@ public class SimpleHttpServer {
         context.setAttribute("/404.html", new NotFoundHttpService());
         context.setAttribute("/405.html", new MethodNotAllowedService());
 
+
         /*TODO#5 Counter 구현을 위해서 CounterUtils.CONTEXT_COUNTER_NAME 으로, 0l 을 context에 등록 합니다.
          */
         context.setAttribute(CounterUtils.CONTEXT_COUNTER_NAME, 0l);
